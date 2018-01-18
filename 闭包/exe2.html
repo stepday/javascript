@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>闭包来实现游戏内还剩余几条命</title>
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+    <style type="text/css">
+    html,
+    body,
+    ul,
+    li,
+    h5 {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .box {
+        margin: 30px;
+    }
+
+    h5 {
+        border-bottom: 2px solid #eee;
+        font-size: 16px;
+        line-height: 45px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        margin-bottom: 30px;
+    }
+
+    ul li {
+        line-height: 35px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h5>闭包的作用</h5>
+        <ul>
+            <li>延长局部变量的生命周期</li>
+        </ul>
+        <button onclick="cut()">减一条命</button>
+        <input type="text" id="life">
+        <button onclick="add()">加一条命</button>
+    </div>
+    <pre class="brush:js">
+		!(function() {
+	        var _life = 10;
+	        //减少一条命
+	        window.cutLife = function() {
+	        	if(_life > 0)
+	            	_life--;
+	        }
+	        //增加一条命
+	        window.addLife = function() {
+	            _life++;
+	        }
+	        //获取当面几条命
+	        window.getLife = function() {
+	            return _life;
+	        }
+	    })();
+
+	    var cut = function() {
+	        cutLife();
+	        get();
+	    }
+	    var add = function() {
+	        addLife();
+	        get();
+	    }
+
+	    var get = function() {
+	        document.getElementById("life").value = getLife();
+	    }
+
+	    get();
+    </pre>
+    <script type="text/javascript">
+    //代码高亮
+    SyntaxHighlighter.highlight();
+    
+    !(function() {
+        var _life = 10;
+        //减少一条命
+        window.cutLife = function() {
+        	if(_life > 0)
+            	_life--;
+        }
+        //增加一条命
+        window.addLife = function() {
+            _life++;
+        }
+        //获取当面几条命
+        window.getLife = function() {
+            return _life;
+        }
+    })();
+
+    var cut = function() {
+        cutLife();
+        get();
+    }
+    var add = function() {
+        addLife();
+        get();
+    }
+
+    var get = function() {
+        document.getElementById("life").value = getLife();
+    }
+
+    get();
+    </script>
+</body>
+
+</html>

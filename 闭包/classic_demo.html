@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>闭包的经典示例</title>
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+    <style type="text/css">
+    html,
+    body,
+    ul,
+    li,
+    h5 {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .box {
+        margin: 30px;
+    }
+
+    h5 {
+        border-bottom: 2px solid #eee;
+        font-size: 16px;
+        line-height: 45px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        margin-bottom: 30px;
+    }
+
+    ul li {
+        line-height: 35px;
+    }
+
+    textarea {
+        width: 80%;
+        min-height: 300px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h5>闭包的经典示例</h5>
+        <pre class="brush: js;">
+			function getResult() {
+				var result = new Array();
+				for(var i = 0;i<10;i++)
+				{
+					//闭包 每一个值保存一个匿名函数
+					result[i] = function(){
+						return i;
+					};
+				}
+				return result;
+			}		
+			//很多人会觉得最后得到的result数组内会依次为[0,1,2,3,4,5,6,7,8,9]
+			var list = getResult();
+			for(item in list)
+			{
+				console.log(list[item]()+"\n");
+			}
+			//结果是输出了10个10，这是因为闭包的作用 保存了i的最后值10
+
+			//如果要让每一个函数都输入对应的值 需要对其函数进行如下调整
+			function getList(){
+				var result = [];
+				for(var i= 0;i<10;i++)
+				{
+					result[i] = function(num){
+						return function(){
+							return num;
+						}
+					}(i);
+					//及时性的传入i值 让里面的闭包函数保存num变量的值
+				}
+				return result;
+			}
+			var listT = getList();
+			for( item in listT)
+			{
+				console.log(listT[item]()+"\n");
+			}
+		</pre>
+    </div>
+    <script type="text/javascript">
+    //代码高亮
+    SyntaxHighlighter.highlight();
+
+    function getResult() {
+        var result = new Array();
+        for (var i = 0; i < 10; i++) {
+            //闭包 每一个值保存一个匿名函数
+            result[i] = function() {
+                return i;
+            };
+        }
+        return result;
+    }
+    //很多人会觉得最后得到的result数组内会依次为[0,1,2,3,4,5,6,7,8,9]
+    var list = getResult();
+    for (item in list) {
+        console.log(list[item]() + "\n");
+    }
+    //结果是输出了10个10，这是因为闭包的作用 保存了i的最后值10
+
+    //如果要让每一个函数都输入对应的值 需要对其函数进行如下调整
+    function getList() {
+        var result = [];
+        for (var i = 0; i < 10; i++) {
+            result[i] = function(num) {
+                return function() {
+                    return num;
+                }
+            }(i);
+            //及时性的传入i值 让里面的闭包函数保存num变量的值
+        }
+        return result;
+    }
+    var listT = getList();
+    for (item in listT) {
+        console.log(listT[item]() + "\n");
+    }
+    </script>
+</body>
+
+</html>

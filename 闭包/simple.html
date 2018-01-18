@@ -1,0 +1,126 @@
+<!-- 闭包的概念描述 -->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>闭包理解入门</title>
+	<meta charset="utf-8">
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+	<style type="text/css">
+		html,body,ul,li,h5{ margin: 0;padding: 0;list-style:none; }
+		.box{ margin: 30px;}
+		h5{ border-bottom: 2px solid #eee; font-size: 16px;}
+		ul{ margin-bottom: 30px; }
+		ul li{ line-height: 35px; }
+	</style>
+</head>
+<body>
+	<div class="box">
+		<h5>闭包的特征</h5>
+		<ul>
+			<li>1、函数作为返回值</li>
+			<li>2、函数作为参数传递</li>
+			<li>3、函数外部想获得函数内部的局部变量值</li>	
+			<li>4、能够读取其他函数内部变量的函数</li>	
+			<li>5、定义在函数内部的函数</li>	
+			<li>6、将函数内部和外部连接起来的桥梁</li>
+		</ul>
+		<h5>闭包的作用</h5>
+		<ul>
+			<li>1、可以读取函数内部的变量</li>
+			<li>2、让局部变量的值始终保存在内存中,延长或破坏了局部变量的生命周期</li>
+		</ul>
+		<h5>闭包的注意点</h5>
+		<ul>
+			<li>1、对内存消耗比较大,切不可滥用,会造成网页性能问题,在IE中可能会导致内存泄漏；解决办法是在退出函数之前将不使用的局部变量全部删除</li>
+			<li>2、闭包会在父函数外部改变函数内部变量的值,不要随便改变父函数内部变量的值</li>
+		</ul>
+
+		<h5>闭包实现计数器</h5>
+		<button onclick="sum()">计数</button>
+		<span id="sNum">0</span>
+	</div>
+	<pre class="brush:js;">
+		//函数作为参数进行传递
+		var max = 10;
+		fn = function(x){			
+			if(x > max)
+				console.log(x);
+		};
+
+	   (function(f){
+	   		var max = 100;
+	   		f(15);
+	   })(fn);
+
+
+		 //函数作为返回值
+		 function get(){
+	  		var max = 10;
+	  		return function bar(x){	  		
+	  			if(x > max)
+	  				console.log(x+"大于"+max);
+	  		};
+		  }
+		 //get(15); //获得一个函数
+		 // var f1 = get();	 
+		 // f1(15);
+		 get()(15);
+
+
+		 var add = (function(){
+		 	var counter = 0;
+		 	return function(){
+		 		return counter = counter+1;
+		 	};
+		 })();
+
+		 function sum(){
+		 	document.getElementById("sNum").innerText = add();
+		 }
+	</pre>
+	<script type="text/javascript">
+		//代码高亮
+    	SyntaxHighlighter.highlight();
+		//函数作为参数进行传递
+		var max = 10;
+		fn = function(x){			
+			if(x > max)
+				console.log(x);
+		};
+
+	   (function(f){
+	   		var max = 100;
+	   		f(15);
+	   })(fn);
+
+
+	  //函数作为返回值
+	  function get(){
+	  		var max = 10;
+	  		return function bar(x){	  		
+	  			if(x > max)
+	  				console.log(x+"大于"+max);
+	  		};
+	  }
+	 //get(15); //获得一个函数
+	 // var f1 = get();	 
+	 // f1(15);
+	 get()(15);
+
+
+	 var add = (function(){
+	 	var counter = 0;
+	 	return function(){
+	 		return counter = counter+1;
+	 	};
+	 })();
+
+	 function sum(){
+	 	document.getElementById("sNum").innerText = add();
+	 }
+	</script>
+</body>
+</html>

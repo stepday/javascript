@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>闭包给对象属性设置私有化特权</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+    <style type="text/css">
+    html,
+    body,
+    ul,
+    li,
+    h5 {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .box {
+        margin: 30px;
+    }
+
+    h5 {
+        border-bottom: 2px solid #eee;
+        font-size: 16px;
+        line-height: 45px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        margin-bottom: 30px;
+    }
+
+    ul li {
+        line-height: 35px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h5>闭包的特征</h5>
+        <ul>
+            <li>函数对外不暴露属性,利用闭包可以给对象设置私有属性并利用特权(Privileged)方法访问私有属性</li>
+        </ul>
+        <input type="text" id="txtName" placeholder="请输入用户名称">
+	    <button onclick="set()">设置</button>
+	    <button onclick="get()">获取</button>
+	    <p id="pName"></p>
+    </div> 
+    <pre class="brush:js;">
+    /**
+     * 定义一个函数类
+     */
+    var User = function() {
+        var name = "";
+        this.setName = function(_name) {
+            name = _name;
+        };
+        this.getName = function() {
+            return name;
+        };
+    };
+
+    var user = new User();
+
+    var set = function() {
+        var name = document.getElementById("txtName").value;
+        if (name.length == 0) {
+            alert("请输入用户名称");
+            return;
+        }
+        user.setName(name);
+    };
+    var get = function() {
+        document.getElementById("pName").innerText = user.getName();
+    };
+    </pre>   
+    <script type="text/javascript">
+    //代码高亮
+    SyntaxHighlighter.highlight();
+
+    /**
+     * 定义一个函数类
+     */
+    var User = function() {
+        var name = "";
+        this.setName = function(_name) {
+            name = _name;
+        };
+        this.getName = function() {
+            return name;
+        };
+    };
+
+    var user = new User();
+
+    var set = function() {
+        var name = document.getElementById("txtName").value;
+        if (name.length == 0) {
+            alert("请输入用户名称");
+            return;
+        }
+        user.setName(name);
+    };
+    var get = function() {
+        document.getElementById("pName").innerText = user.getName();
+    };
+    </script>
+</body>
+
+</html>

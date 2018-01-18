@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>闭包的运用</title>
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+</head>
+<body>
+	<pre class="brush:js;">
+	var name = "我是外部的变量";
+
+		var User = {
+			name:"我是内部变量",
+			getName:function(){
+				return function(){
+					return this.name;
+				};
+			},
+			getNameOther:function(){
+				var that = this;
+				return function(){
+					return that.name;
+				};
+			}
+		};	
+
+		console.log(User.getName()());
+		console.log(User.getNameOther()());
+	</pre>
+	<script type="text/javascript">
+		//代码高亮
+    	SyntaxHighlighter.highlight();
+    	
+		var name = "我是外部的变量";
+
+		var User = {
+			name:"我是内部变量",
+			getName:function(){
+				return function(){
+					return this.name;
+				};
+			},
+			getNameOther:function(){
+				var that = this;
+				return function(){
+					return that.name;
+				};
+			}
+		};	
+
+		console.log(User.getName()());
+		console.log(User.getNameOther()());
+	</script>
+</body>
+</html>
