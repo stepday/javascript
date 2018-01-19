@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>浏览器的工作原理</title>	
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+    <style type="text/css">
+    html,
+    body,
+    ul,
+    li,
+    h5,pre,strong{
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .box {
+        margin: 30px;
+    }
+
+    h5 {
+        border-bottom: 2px solid #eee;
+        font-size: 16px;
+        line-height: 45px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        margin-bottom: 30px;
+    }
+
+    ul li {
+        line-height: 35px;
+    }
+
+    textarea {
+        width: 80%;
+        min-height: 300px;
+    }
+    pre{
+        background: #009688;
+        padding: 10px;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    strong{
+        display: inline-block;
+        width: 100%; 
+        margin-top: 15px;       
+    }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h5>浏览器的主要功能</h5>
+        <pre>浏览器的主要功能是将每个页面请求的web资源进行可视化呈现，需要从服务器请求资源并将其显示在浏览器窗口中，资源的格式通常是HTML，也包括PDF、image及其他格式。用户用URI（Uniform Resource Identifier统一资源标识符）来指定所请求资源的位置，通过DNS查询，将网址转换为IP地址</pre>
+        <h5>浏览器的渲染过程</h5>
+        <pre>解析html以构建dom树 -> 构建render树 -> 布局render树 -> 绘制render树</pre>
+        <img src="http://img.blog.csdn.net/20160724092250385"/>
+        <strong>浏览器会解析三个东西：</strong>
+        <ul>
+            <li>1、HTML/SVG/XHTML，解析这三种文件会产生一个 DOM Tree</li>
+            <li>2、CSS，解析 CSS 会产生 CSS 规则树</li>
+            <li>Javascript脚本，主要是通过 DOM API 和 CSSOM API 来操作 DOM Tree 和 CSS Rule Tree</li>
+        </ul>
+        <h5>浏览器解析的具体过程</h5>
+        <pre>浏览器获取到web资源后自上而下进行加载，边加载边解析</pre>
+        <strong>解析过程</strong>
+        <ul>
+            <li>1.浏览器会将HTML解析成一个DOM树，DOM 树的构建过程是一个深度遍历过程：当前节点的所有子节点都构建好后才会去构建当前节点的下一个兄弟节点</li> 
+            <li>2.将CSS解析成 CSS Rule Tree</li>
+            <li>3.根据DOM树和CSSOM来构造 Rendering Tree。注意：Rendering Tree 渲染树并不等同于 DOM 树，因为一些像 Header 或 display:none 的东西就没必要放在渲染树中了。</li>
+            <li>4.有了Render Tree，浏览器已经能知道网页中有哪些节点、各个节点的CSS定义以及他们的从属关系。下一步操作称之为Layout，顾名思义就是计算出每个节点在屏幕中的位置</li>
+            <li>5.再下一步就是绘制，即遍历render树，并使用UI后端层绘制每个节点</li>
+        </ul>
+        <h5>回流（reFlow)问题</h5>
+        <pre>浏览器要花时间去渲染，当它发现了某个部分发生了变化影响了布局，那就需要倒回去重新渲染</pre>
+        <h5>reFlow的原因</h5>
+        <ul>
+            <li>1、页面初始化的时候</li>
+            <li>2、操作DOM的时候</li>
+            <li>3、元素大小改变的时候</li>
+            <li>4、CSS的属性发生了变化的时候</li>
+        </ul>
+        <h5>重绘(rePaint)问题</h5>
+        <pre>如果只是改变了某个元素的背景颜色，文字颜色等，不影响元素周围或内部布局的属性，将只会引起浏览器的repaint，重画某一部分。Reflow要比Repaint更花费时间，也就更影响性能。所以在写代码的时候，要尽量避免过多的Reflow</pre>
+        <h5>如何尽可能的避免更少的reFlow和rePaint问题</h5>
+        <ul>
+            <li>（1）不要一条一条地修改 DOM 的样式。与其这样，还不如预先定义好 css 的 class，然后修改 DOM 的 className</li> 
+            <li>（2）不要把 DOM 结点的属性值放在一个循环里当成循环里的变量</li>
+　          <li>（3）为动画的 HTML 元件使用 fixed 或 absoult 的 position，那么修改他们的 CSS 是不会 reflow 的</li>
+　          <li>（4）千万不要使用 table 布局。因为可能很小的一个小改动会造成整个 table 的重新布局</li>
+        </ul>        
+    </div>
+</body>
+</html>

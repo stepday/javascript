@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>雅虎提高网站访问速度的34条军规</title>
+	<meta http-equiv="Cache-Control" content="max-age=0">
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+    <style type="text/css">
+    html,
+    body,
+    ul,
+    li,
+    h5,pre,strong{
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .box {
+        margin: 30px;
+    }
+
+    h5 {
+        border-bottom: 2px solid #eee;
+        font-size: 16px;
+        line-height: 45px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        margin-bottom: 30px;
+    }
+
+    ul li {
+        line-height: 35px;
+    }
+
+    textarea {
+        width: 80%;
+        min-height: 300px;
+    }
+    pre{
+        background: #009688;
+        padding: 10px;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    strong{
+        display: inline-block;
+        width: 100%; 
+        margin-top: 15px;       
+    }
+    </style>
+</head>
+<body>
+	<div class="box">
+		<h5>1、减少HTTP请求数量</h5>
+		<pre>每一次HTTP请求都会耗费资源请求和等待的时间，如果请求资源比较多的情况下页面渲染完成耗时将会很长，我们要尽可能的减少HTTP的请求数。做法如下：</pre>
+		<ul>
+			<li>1、合并请求资源（css文件合并、js文件合并、图片合并采用background-position来定位）;在线工具：<a href="https://www.toptal.com/developers/css/sprite-generator" target="_blank">https://www.toptal.com/developers/css/sprite-generator</a></li>						
+		</ul>
+		<h5>2、使用内容分布式网络（CDN）</h5>
+		<pre>像很多大型企业的做法是将静态资源（css、js、images）分别部署到不通的服务器上,可以直接使用第三方cdn资源或者自己部署一个CDN服务器来存储静态资源</pre>
+		<h5>3、给头部添加一个失效期或者Cache-Control (Add an Expires or a Cache-Control Header)</h5>
+		<ul>
+			<li>对于静态组件：把头部的缓存期设为某个遥远的未来，使其能够“永不过期”。</li>
+			<li>对于动态组件：使用适当的Cache-Control头部帮助浏览器执行特定的请求。</li>
+		</ul>
+		<pre class="brush:js;">
+			<!--永久过期 永远过期，每次请求都必须和服务器交互，max-age的单位是秒-->
+			<META HTTP-EQUIV="Cache-Control" CONTENT="max-age=0" />
+			<!-- 客户端不缓存-->
+			<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />			
+		</pre>
+		<h5>4、压缩组件</h5>
+		<pre>压缩各种文件借助第三方工具,尽可能减少文件大小,提高文件web请求的传输效率</pre>
+		<h5>5、把样式表放于前面</h5>
+		<pre>样式表放于前面便于浏览器渲染引擎能够提早解析并知道下一个要渲染的dom的样式，这样做可以保证页面样式不会出现“闪屏”现象，如果是最后才加载css，你能够明显感觉到页面“闪烁”了的</pre>
+		<h5>6、把脚本放在最后</h5>
+		<pre>javascript会在执行的时候会直接阻塞掉后面dom元素的渲染工作,原因是浏览器担心脚本内有直接修改DOM树的操作或者document.write输出或者页面跳转的location.href的，所以需要等待js执行解释完毕后再行加载后续资源</pre>		
+		<h5>javascript的性能优化</h5>
+		<ul>
+			<li>1、页面内的javascript脚本引入或者嵌入尽可能的放在body结束标签之前</li>
+			<li>2、尽可能少的直接在html内嵌入script脚本片段</li>
+		</ul>
+		<h5>7、不使用CSS表达式</h5>
+		<pre>CSS表达式的使用会耗费浏览器的CSS规则解析时间，表达式采用了javascript的表达</pre>
+		<pre class="brush:css;">
+			background-color: expression( (new Date()).getHours()%2 ? "#B8D4FF" : "#F08A00" );
+		</pre>
+		<h5>8、使用外部的JavaScript和CSS</h5>
+		<pre>实际应用中使用外部文件往往产生更快的页面，浏览器会缓存js和css文件。外部文件被缓存的频率和HTML文档被请求的次数相关</pre>
+		<h5>9、减少DNS的查询</h5>
+		<pre>DNS查找给定域名的IP地址一般会耗费20~120毫秒，在DNS查找结束前，浏览器不会从目标域名那里下载任何东西。DNS查询会被缓存以便优化性能。减少页面外部资源请求的域名数量</pre>
+		<h5>10、缩小javascript和css文件的大小</h5>
+		<h5>11、避免重定向</h5>
+		<h5>12、移除重复的脚本</h5>
+		<h5>13、设定ETags</h5>
+		<h5>14、让Ajax可以缓存</h5>
+		<h5>15、更早的刷新缓冲区</h5>
+		<h5>16、在Ajax请求中使用GET方法</h5>
+		<h5>17、后加载组件</h5>
+		<h5>18、预先加载组件</h5>
+		<h5>19、减小DOM元素的数量</h5>
+	</div>
+
+	<script type="text/javascript">
+		//代码高亮
+	    SyntaxHighlighter.highlight();
+	</script>
+</body>
+</html>
