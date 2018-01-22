@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Javascript内经典的事件委托/事件代理/事件冒泡深度剖析</title>
+    <meta http-equiv="Cache-Control" content="max-age=0">
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+    <style type="text/css">
+    html,
+    body,
+    ul,
+    li,
+    h5,
+    pre,
+    strong {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .box {
+        margin: 30px;
+    }
+
+    .tag {
+        color: #FFEB3B;
+    }
+
+    h5 {
+        border-bottom: 2px solid #eee;
+        font-size: 16px;
+        line-height: 45px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        margin-bottom: 30px;
+    }
+
+    ul li {
+        line-height: 35px;
+    }
+
+    textarea {
+        width: 80%;
+        min-height: 300px;
+    }
+
+    pre {
+        background: #009688;
+        padding: 10px;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin-top: 10px;
+    }
+
+    strong {
+        display: inline-block;
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    button {
+        outline: none;
+        border: none;
+        min-width: 80px;
+        line-height: 35px;
+        border-radius: 5px;
+        background: #009587;
+        color: #fff;
+        cursor: pointer;
+        margin-right: 15px;
+    }
+
+    button:hover {
+        box-shadow: 3px 3px 10px #666;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h5>什么是事件委托?</h5>
+        <pre>事件委托就是利用事件冒泡原理将子节点的事件委托给父节点去执行，这样可以大大减少js对dom元素的操作和减少函数的编写，提高页面执行性能。</pre>
+        <h5>事件委托的精髓所在是什么?</h5>
+        <pre>减少目标对象事件的函数编写和减少DOM的操作次数，提升页面执行性能</pre>
+        <h5>1、经典示例：点击ul下li节点，将其文本信息弹出</h5>
+        <pre class="brush:js;">
+            <ul id="ulBox">
+                <li>我是第一行</li>
+                <li>我是第二行</li>
+                <li>我是第三行</li>
+                <li>我是第四行</li>
+            </ul>
+        </pre>
+        <pre>按照传统的事件的处理方式我们通常会这样编写代码如下所示：</pre>
+        <pre class="brush:js;">
+            <script type="text/javascript">
+                var ulObj = document.getElementById("ulBox"),
+                    liList = ulObj.getElementsByTagName("li");           
+                for(var i=0;i<liList.length;i++){
+                    liList[0].onclick = function(){
+                        alert(this.innerText);
+                    }
+                }
+            </script>
+        </pre>
+        <pre>从以上代码片段就很容易看出要监听li的click事件需要做大量的工作，提取到ul节点对象，接着提取旗下所有的li节点，然后逐一监听click事件。如果我们采用了<b class="tag">事件委托</b>机制，只需要监听父节点ul的click事件即可，代码修改如下：</pre>
+        <pre class="brush:js;">
+            <script type="text/javascript">
+                var ulObj = document.getElementById("ulBox");
+                ulObj.onclick = function(event){
+                    event = event || window.event;
+                    //通过事件代理的target精确定位到真正点击的dom节点 IE下通过srcElement提取目标对象
+                    var target = event.target || event.srcElement;
+                    //通过target的nodeName确定目标对象的节点名称
+                    if(target.nodeName.toLocaleLowerCase() == "li")
+                    {
+                        alert(target.innerText); //弹出文本信息
+                    }
+                }
+            </script>
+        </pre>
+        <pre>很明显可以感知到通过事件委托机制我们大量减少了dom的操作，这个示例中我们只操作了一次dom也就是ul父节点,<b class="tag">且当新插入一个li节点的时候不需要针对新插入的节点额外在执行代码监听click事件</b>,点击下方文本体验体验下</pre>
+        <ul id="ulBox">
+            <li>我是第一行</li>
+            <li>我是第二行</li>
+            <li>我是第三行</li>
+            <li>我是第四行</li>
+        </ul>
+        <h5>2、经典示例：按钮组不同事件的处理</h5>
+        <pre>比如我有两个按钮增加和删除，增加按钮点击事件执行插入一个新的li节点，删除按钮点击后删除最后一个li节点。<br/><b class="tag">传统做法是分别给两个按钮监听click事件</b></pre>
+        <pre class="brush:js;">
+            <ul id="ulBoxTwo">
+                <li>我是第一行</li>
+                <li>我是第二行</li>
+            </ul>
+            <div id="btnBox">
+                <button id="btnAdd">新增</button>
+                <button id="btnDel">删除</button>
+            </div>
+
+            <script type="text/javascript">
+                var ulObjTwo = document.getElementById("ulBoxTwo"),
+                    liListTwo = ulObjTwo.getElementsByTagName("li");           
+                for(var i=0;i<liListTwo.length;i++){
+                    liListTwo[i].onclick = function(){
+                        alert(this.innerText);
+                    }
+                } 
+
+                //给按钮添加click事件
+                document.getElementById("btnAdd").addEventListener("click", function() {
+                    var ulObjTwo = document.getElementById("ulBoxTwo");
+                    var newLi = document.createElement("li");
+                    newLi.innerText = "我是新增的";
+                    ulObjTwo.appendChild(newLi);
+                });
+
+                document.getElementById("btnDel").addEventListener("click",function() {
+                    var ulObjTwo = document.getElementById("ulBoxTwo"),
+                        liListTwo = ulObjTwo.getElementsByTagName("li"),
+                        len = liListTwo.length;    
+                    liListTwo[len-1].remove();
+                });
+            </script>
+        </pre>
+        <ul id="ulBoxTwo">
+            <li>我是第一行</li>
+            <li>我是第二行</li>
+        </ul>
+        <div id="btnBox">
+            <button id="btnAdd">新增</button>
+            <button id="btnDel">删除</button>
+        </div>
+        <pre>从上面的示例中可以看出<b class="tag">新增的li没有触发click事件</b>,如果要做到新增的li也要触发click事件，按照传统的方法需要<b class="tag">将li事件绑定的封装为一个函数，在新增成功后去调用</b>调整后的代码片段如下所示：</pre>
+        <pre class="brush:js;">
+            <script type="text/javascript">
+                function addEvent(){
+                    var ulObjTwo = document.getElementById("ulBoxTwo"),
+                        liListTwo = ulObjTwo.getElementsByTagName("li");
+                    for (var i = 0; i < liListTwo.length; i++) {
+                        liListTwo[i].onclick = function() {
+                            alert(this.innerText);
+                        }
+                    }
+                }
+            </script>
+        </pre>
+        <pre>这样ul 内的li节点会被多次查找且多次绑定click事件，这样性能很差，如果采用事件委托方式，我们可以这样做，通过event找到目标事件源，通过其id标识符定位是来自哪一个按钮，另外将li的事件委托到父节点ul上面，这样我们新增li节点不需要重复绑定click事件，调整后的代码如下所示：</pre>
+        <pre class="brush:js;">
+            <script type="text/javascript">
+                var ulObjTwo = document.getElementById("ulObj");
+                ulObjTwo.onclick = function(event){
+                    event = event || window.event;
+                    var target = event.target || event.srcElement;
+                    if(target.nodeName.toLocaleLowerCase() == "li")
+                    {
+                        alert(target.innerText);
+                    }
+                }
+
+                //给按钮组外的容器添加click事件
+                var btnObj = document.getElementById("btnBox");
+                btnObj.onclick = function(event){
+                    event = event || window.event;
+                    var target = event.target || event.srcElement;
+                    switch(target.id){
+                        case "btnAdd":
+                            var ulObjTwo = document.getElementById("ulBoxTwo");
+                            var newLi = document.createElement("li");
+                            newLi.innerText = "我是新增的";
+                            ulObjTwo.appendChild(newLi);
+                        break;
+                        case "btnDel":
+                            var ulObjTwo = document.getElementById("ulBoxTwo"),
+                                liListTwo = ulObjTwo.getElementsByTagName("li"),
+                                len = liListTwo.length;    
+                            liListTwo[len-1].remove();
+                        break;
+                    }
+                }
+            </script>
+        </pre>
+    </div>
+    <script type="text/javascript">
+    //代码高亮
+    SyntaxHighlighter.highlight();
+
+    var ulObj = document.getElementById("ulBox");
+    ulObj.onclick = function(event) {
+        event = event || window.event;
+        //通过事件代理的target精确定位到真正点击的dom节点 IE下通过srcElement提取目标对象
+        var target = event.target || event.srcElement;
+        //通过target的nodeName确定目标对象的节点名称
+        if (target.nodeName.toLocaleLowerCase() == "li") {
+            alert(target.innerText); //弹出文本信息
+        }
+    }
+
+    var ulObjTwo = document.getElementById("ulBoxTwo"),
+        liListTwo = ulObjTwo.getElementsByTagName("li");
+    for (var i = 0; i < liListTwo.length; i++) {
+        liListTwo[i].onclick = function() {
+            alert(this.innerText);
+        }
+    }
+
+    //给按钮添加click事件
+    document.getElementById("btnAdd").addEventListener("click", function() {
+        var ulObjTwo = document.getElementById("ulBoxTwo");
+        var newLi = document.createElement("li");
+        newLi.innerText = "我是新增的";
+        ulObjTwo.appendChild(newLi);
+    });
+
+    document.getElementById("btnDel").addEventListener("click",function() {
+        var ulObjTwo = document.getElementById("ulBoxTwo"),
+            liListTwo = ulObjTwo.getElementsByTagName("li"),
+            len = liListTwo.length;    
+        liListTwo[len-1].remove();
+    });
+    </script>
+</body>
+
+</html>

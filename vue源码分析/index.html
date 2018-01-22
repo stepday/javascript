@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>VUE框架搭建原理剖析</title>
+	<meta http-equiv="Cache-Control" content="max-age=0">
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+    <style type="text/css">
+    html,
+    body,
+    ul,
+    li,
+    h5,pre,strong{
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .box {
+        margin: 30px;
+    }
+
+    h5 {
+        border-bottom: 2px solid #eee;
+        font-size: 16px;
+        line-height: 45px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        margin-bottom: 30px;
+    }
+
+    ul li {
+        line-height: 35px;
+    }
+
+    textarea {
+        width: 80%;
+        min-height: 300px;
+    }
+    pre{
+        background: #009688;
+        padding: 10px;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    strong{
+        display: inline-block;
+        width: 100%; 
+        margin-top: 15px;       
+    }
+    button{ 
+		outline: none;
+		border: none;
+		min-width: 80px;
+		line-height: 35px;
+		border-radius: 5px;
+		background: #009587;
+		color: #fff;
+		cursor: pointer;
+		margin-right: 15px;
+    }
+    button:hover{
+    	box-shadow: 3px 3px 10px #666;
+    }
+    </style>	
+</head>
+<body>
+	<div class="box">
+		<h5>1、VUE数据双向绑定的实现原理</h5>
+		<pre>采用数据劫持结合发布者-订阅者模式的方式，通过Object.defineProperty()来劫持各个属性的setter，getter，在数据变动时发布消息给订阅者，触发相应的监听回调,参考地址：https://segmentfault.com/a/1190000006599500</pre>
+		<input type="text" v-model="{{name}}">
+		<p id="pDemo"></p>
+		<script type="text/javascript">
+			var data = {name:"stepday"};
+			Object.defineProperty(data,"name",{
+				enumerable:true,//可枚举
+				configurable:false,// 不能再define
+				get:function(){
+					return data.name;
+				},
+				set:function(newVal){
+					[].slice.call(document.all).forEach(function(obj){
+						[].slice.call(obj.attributes).forEach(function(attr){
+							if(attr.name == "v-model")
+							{
+								//console.log(data["name"]);
+								obj.value = data[attr.value.replace(/(\{{)|(\}})/g,'')];
+							}
+						});
+					});
+					data.name = newVal;
+				}
+			});
+			data.name = "rmj";
+		</script>
+	</div>
+</body>
+</html>
