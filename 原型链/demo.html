@@ -12,7 +12,9 @@
     body,
     ul,
     li,
-    h5 {
+    h5,
+    pre,
+    strong {
         margin: 0;
         padding: 0;
         list-style: none;
@@ -20,6 +22,10 @@
 
     .box {
         margin: 30px;
+    }
+
+    .tag {
+        color: #FFEB3B;
     }
 
     h5 {
@@ -41,14 +47,45 @@
         width: 80%;
         min-height: 300px;
     }
+
+    pre {
+        background: #009688;
+        padding: 10px;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin-top: 10px;
+    }
+
+    strong {
+        display: inline-block;
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    button {
+        outline: none;
+        border: none;
+        min-width: 80px;
+        line-height: 35px;
+        border-radius: 5px;
+        background: #009587;
+        color: #fff;
+        cursor: pointer;
+        margin-right: 15px;
+    }
+
+    button:hover {
+        box-shadow: 3px 3px 10px #666;
+    }
     </style>
 </head>
 <body>
 	<div class="box">
 		<h5>什么是原型链？</h5>
-		<ul>
-			<li></li>
-		</ul>	
+		<pre>一个对象的构造函数指向了另外一个对象实例（构造函数)，实现了属性和方法的继承关系</pre>	
 	</div>
 </body>
 </html>

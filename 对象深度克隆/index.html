@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>对象深度克隆的实现方式探讨</title>
+    <script type="text/javascript" src="../js/shCore.js"></script>
+    <script type="text/javascript" src="../js/shBrushCss.js"></script>
+    <script type="text/javascript" src="../js/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/shCoreDefault.css" />
+    <style type="text/css">
+    html,
+    body,
+    ul,
+    li,
+    h5,
+    pre,
+    strong {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .box {
+        margin: 30px;
+    }
+
+    .tag {
+        color: #FFEB3B;
+    }
+
+    h5 {
+        border-bottom: 2px solid #eee;
+        font-size: 16px;
+        line-height: 45px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        margin-bottom: 30px;
+    }
+
+    ul li {
+        line-height: 35px;
+    }
+
+    textarea {
+        width: 80%;
+        min-height: 300px;
+    }
+
+    pre {
+        background: #009688;
+        padding: 10px;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin-top: 10px;
+    }
+
+    strong {
+        display: inline-block;
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    button {
+        outline: none;
+        border: none;
+        min-width: 80px;
+        line-height: 35px;
+        border-radius: 5px;
+        background: #009587;
+        color: #fff;
+        cursor: pointer;
+        margin-right: 15px;
+    }
+
+    button:hover {
+        box-shadow: 3px 3px 10px #666;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h5>对象克隆的关键点</h5>
+        <pre>对象包含有属性、函数以及子对象，在克隆的时候需要考虑到深度克隆的问题</pre>
+        <h5>方法一：原型扩展法</h5>
+        <pre class="brush:js;">
+			<script type="text/javascript">
+				Object.prototype.clone = function(){
+					var _inThis = this;
+			        //原型指向保持一致
+			        var newObj = Object.create(Object.getPrototypeOf(this));
+			        //自身属性保持一致
+			        var propNames = Object.getOwnPropertyNames(this);
+			        propNames.forEach(function(item) {
+			            //保持每个属性的特性一致
+			            var des = Object.getOwnPropertyDescriptor(_inThis, item);
+			            Object.defineProperty(newObj, item, des);
+			        });
+					return newObj;
+				}		
+			</script>
+		</pre>
+        <pre>测试方法</pre>
+        <pre class="brush:js;">
+			<script type="text/javascript">
+				var user = {
+					name:"stepday",
+					sex:"男",
+					say:function(_msg)
+					{
+						console.log("hello "+_msg);
+					},
+					links:[{
+						name:"yaoyao",
+						sex:"女"
+					},{
+						name:"闺女",
+						sex:"女",
+						age:3
+					}]
+				};
+
+				var otherUser = user.clone();
+				otherUser.say("javascript");
+			</script>
+		</pre>
+		<pre>另外比较变相的方法是借助<b class="tag">JSON对象来直接转换</b></pre>
+		<pre class="brush:js;">
+			<script type="text/javascript">
+				var user = {name:"stepday",sex:"男",links:[{name:"yaoyao",sex:"女"}]};
+				var u = JSON.parse(JSON.stringify(user));
+				u.links[0].name = "rmj";
+
+				console.log(user.links[0].name); //yaoyao  不会一起变成rmj的 因为重新分配了空间 不是指向同一片区域的指针了 修改值不会相互影响
+
+			</script>
+		</pre>
+    </div>
+    <script type="text/javascript">
+    //代码高亮
+    SyntaxHighlighter.highlight();
+
+    Object.prototype.clone = function() {    	
+    	var _inThis = this;
+        //原型指向保持一致
+        var newObj = Object.create(Object.getPrototypeOf(this));
+        //自身属性保持一致
+        var propNames = Object.getOwnPropertyNames(this);
+        propNames.forEach(function(item) {
+            //保持每个属性的特性一致
+            var des = Object.getOwnPropertyDescriptor(_inThis, item);
+            Object.defineProperty(newObj, item, des);
+        });
+        return newObj;
+    }
+
+    var user = {
+        name: "stepday",
+        sex: "男",
+        say: function(_msg) {
+            console.log("hello " + _msg);
+        },
+        links: [{
+            name: "yaoyao",
+            sex: "女"
+        }, {
+            name: "闺女",
+            sex: "女",
+            age: 3
+        }]
+    };
+
+    var otherUser = user.clone();
+
+    otherUser.say("javascript");
+
+    </script>
+</body>
+
+</html>
