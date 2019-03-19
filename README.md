@@ -79,5 +79,23 @@
     showTwo();
 </pre>
 
-## 原型链
+## ES6剩余参数(...arg) 和 默认arguments 的区别
+- 剩余参数只包含那些没有对应形参的实参，而arguments对象包含了传给函数所有的实参
+- arguments 不是一个真正的数组，而剩余参数是真正的Array实例，如果要非常方便的操作arguments内的值可以用[].slice.call(arguments) 将其进行转换
+- arguments 对象还有一些附加属性 比如有callee
+```
+/**
+* 定义一个计算数据值和的函数
+*/
+function add(...arg){
+   return arg.reduce((a,b) => a + b); //arg 是一个参数数组
+}
+add(1,2,3);// 6
+
+//如果是用arguments获取参数如何做呢？
+function add(){
+   return [].slice.call(arguments).reduce((a,b) => a + b); //arguments转换为Array对象
+}
+add(1,2,3); // 6
+```
 
