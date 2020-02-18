@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>websoket+nodejs请求实例</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 打开一个websocket
+		var ws = new WebSocket("ws://localhost:3000/");
+
+		ws.onopen = function(){
+			// 链接成功
+
+			// 定时发送数据
+			setInterval(function(){
+				ws.send("客户端消息");
+			},2000);
+		};
+
+		ws.onmessage = function(e){
+			// 监听消息接收
+			console.log(e,e.data);
+		};
+	</script>
+</body>
+</html>
